@@ -39,7 +39,13 @@ def remove_outliers(df):
     upper_limit = df_mean + 3 * df_std
     lower_limit = df_mean - 3 * df_std
     
-    df = df[(df['Fare'] <= upper_limit) & (df['Fare'] >= lower_limit)].reset_index(drop=True)
+    while df[(df['Fare'] > upper_limit) | (df['Fare'] < lower_limit)].shape[0] > 0:
+        df = df[(df['Fare'] <= upper_limit) & (df['Fare'] >= lower_limit)].reset_index(drop=True)
+        df_mean = df['Fare'].mean()
+        df_std = df['Fare'].std()
+        upper_limit = df_mean + 3 * df_std
+        lower_limit = df_mean - 3 * df_std
+ 
     return df
 
 
