@@ -37,7 +37,9 @@ def remove_outliers(df):
     # TODO 3.2: 移除 Fare > mean + 3*std 的資料
     
     upper_limit = df_mean + 3 * df_std
-    df = df[df['Fare'] <= upper_limit].reset_index(drop=True)
+    lower_limit = df_mean - 3 * df_std
+    
+    df = df[(df['Fare'] <= upper_limit) & (df['Fare'] >= lower_limit)].reset_index(drop=True)
     return df
 
 
