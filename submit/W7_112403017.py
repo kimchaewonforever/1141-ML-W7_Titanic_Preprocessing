@@ -36,8 +36,8 @@ def remove_outliers(df):
     df_std=df['Fare'].std()
     # TODO 3.2: 移除 Fare > mean + 3*std 的資料
     
-    df = df[df['Fare'] <= df_mean + 3 * df_std]
-    
+    upper_limit = df_mean + 3 * df_std
+    df = df[df['Fare'] <= upper_limit].reset_index(drop=True)
     return df
 
 
@@ -45,7 +45,7 @@ def remove_outliers(df):
 def encode_features(df):
     # TODO 4.1: 使用 pd.get_dummies 對 Sex、Embarked 進行編碼
     
-    df = pd.get_dummies(df, columns=['Sex', 'Embarked'], drop_first=True)
+    df = pd.get_dummies(df, columns=['Sex', 'Embarked'], drop_first=False)
     df_encoded = df
     
     return df_encoded
