@@ -11,7 +11,7 @@ from sklearn.model_selection import train_test_split
 # 任務 1：載入資料
 def load_data(file_path):
     # TODO 1.1: 讀取 CSV
-    df=pd.read_csv("titanic.csv")
+    df=pd.read_csv(file_path)
     # TODO 1.2: 統一欄位首字母大寫，並計算缺失值數量
     df.columns = [c.capitalize() for c in df.columns]
     missing_count = df.isnull().sum().sum()
@@ -77,7 +77,7 @@ def split_data(df):
 # 任務 7：輸出結果
 def save_data(df, output_path):
     # TODO 7.1: 將清理後資料輸出為 CSV (encoding='utf-8-sig')
-    df.to_csv("titanic_processed.csv", encoding='utf-8-sig', index=False)
+    df.to_csv(output_path, encoding='utf-8-sig', index=False)
     pass
 
 
