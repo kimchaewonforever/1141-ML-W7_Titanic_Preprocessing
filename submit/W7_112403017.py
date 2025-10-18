@@ -11,8 +11,8 @@ from sklearn.model_selection import train_test_split
 # 任務 1：載入資料
 def load_data(file_path):
     # TODO 1.1: 讀取 CSV
-    df=pd.read_csv(file_path)
     # TODO 1.2: 統一欄位首字母大寫，並計算缺失值數量
+    df = pd.read_csv(file_path)
     df.columns = [c.capitalize() for c in df.columns]
     missing_count = df.isnull().sum().sum()
     return df, int(missing_count)
@@ -21,52 +21,47 @@ def load_data(file_path):
 # 任務 2：處理缺失值
 def handle_missing(df):
     # TODO 2.1: 以 Age 中位數填補
-    df['Age']=df["Age"].fillna(df["Age"].median())
+    df['Age'].fillna(df['Age'].median() ,inplace=True)
     # TODO 2.2: 以 Embarked 眾數填補
-    df['Embarked']=df["Embarked"].fillna(df["Embarked"].mode()[0])
-    
+    df['Embarked'].fillna(df['Embarked'].mode()[0] ,inplace=True)
     return df
 
 
 # 任務 3：移除異常值
 def remove_outliers(df):
     # TODO 3.1: 計算 Fare 平均與標準差
-    
-    df_mean=df['Fare'].mean()
-    df_std=df['Fare'].std()
-    # TODO 3.2: 移除 Fare > mean + 3*std 的資料
-    
-    upper_limit = df_mean + 3 * df_std
-    lower_limit = df_mean - 3 * df_std
-    
-    while df[(df['Fare'] > upper_limit) | (df['Fare'] < lower_limit)].shape[0] > 0:
-        df = df[(df['Fare'] <= upper_limit) & (df['Fare'] >= lower_limit)].reset_index(drop=True)
-        df_mean = df['Fare'].mean()
-        df_std = df['Fare'].std()
-        upper_limit = df_mean + 3 * df_std
-        lower_limit = df_mean - 3 * df_std
- 
+    mean = df['Fare'].mean()
+    std = df['Fare'].std()
+    upper = mean + 3*std
+    lower = mean -3*std
+
+    # TODO 3.2: 使用 while 迴圈移除 Fare > x 的資料
+    while df[(df['Fare'] > upper) | (df['Fare'] < lower)].shape[0] >0:
+        df=df[(df["Fare"]<=upper) &(df['Fare']>-lower)].reset_index(drop=True)
+        df_mean=df['Fare'].mean()
+        df_std=df['Fare'].std()
+        upper = mean + 3*std
+        lower = mean -3*std
     return df
+
 
 
 # 任務 4：類別變數編碼
 def encode_features(df):
     # TODO 4.1: 使用 pd.get_dummies 對 Sex、Embarked 進行編碼
-    
-    df = pd.get_dummies(df, columns=['Sex', 'Embarked'], drop_first=False)
-    df_encoded = df
-    
+    df_encoded = pd.get_dummies(df, columns=['Sex', 'Embarked'], drop_first=True)
+
+
     return df_encoded
+
 
 
 # 任務 5：數值標準化
 def scale_features(df):
     # TODO 5.1: 使用 StandardScaler 標準化 Age、Fare
-    
     scaler = StandardScaler()
-    df[['Age', 'Fare']] = scaler.fit_transform(df[['Age', 'Fare']])
-    df_scaled = df
-    
+    df[['Age', 'Fare']]=scaler.fit_transform(df[['Age', 'Fare']])
+    df_scaled=df
     return df_scaled
 
 
@@ -75,17 +70,16 @@ def split_data(df):
     # TODO 6.1: 將 Survived 作為 y，其餘為 X
     
     X = df.drop('Survived', axis=1)
-    
     y = df['Survived']
+    
     # TODO 6.2: 使用 train_test_split 切割 (test_size=0.2, random_state=42)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     return X_train, X_test, y_train, y_test
 
-
 # 任務 7：輸出結果
 def save_data(df, output_path):
     # TODO 7.1: 將清理後資料輸出為 CSV (encoding='utf-8-sig')
-    df.to_csv(output_path, encoding='utf-8-sig', index=False)
+    df.to_csv(output_path, index = False, encoding='utf-8-sig')
     pass
 
 
